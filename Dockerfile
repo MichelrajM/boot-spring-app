@@ -1,5 +1,5 @@
 # Use a specific Java base image
-FROM openjdk:11-jre-slim
+FROM openjdk:latest
 
 # Set the working directory
 WORKDIR /app
@@ -8,7 +8,7 @@ WORKDIR /app
 COPY target/Application-0.0.1-SNAPSHOT.jar app.jar
 
 # Expose the application port
-EXPOSE 9090
+EXPOSE 80
 
 # Command to run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
