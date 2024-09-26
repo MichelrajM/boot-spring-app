@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+    tools {
+        maven 'Maven 3.6.3'
+    }
+    stages {
+        stage('Check Out Source Code') {
+            steps {
+                git url: 'https://github.com/MichelrajM/boot-spring-app.git', branch: 'main'
+            }
+        }
+        stage('Build the Code') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        stage('Docker') {
+            steps {
+                sh 'sudo docker build -t michelraj/myapplication:latest .'
+            }
+        }
+        stage('Push') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhubcreds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        sh 'echo "$PASSWORD" | docker login -u "$USERNAME" --password-stdin'
+                        sh 'docker push michelraj/myapplication:latest'
+                    }
+                }
+            }
+        }
+    }
+}
